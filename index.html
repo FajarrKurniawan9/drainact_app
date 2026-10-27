@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>DrainAct - Lapor Tumpukan Sampah Kota Malang</title>
+    <script>
+      try {
+        var t = localStorage.getItem("theme");
+        if (
+          t === "dark" ||
+          (!t && matchMedia("(prefers-color-scheme: dark)").matches)
+        )
+          document.documentElement.classList.add("dark");
+      } catch (e) {}
+    </script>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+            },
+            colors: { b: "#0284C7", bh: "#0369A1" },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+    />
+    <style type="text/tailwindcss">
+      @layer components {
+        .card {
+          @apply bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5;
+        }
+        .btn {
+          @apply px-4 py-2 rounded-lg text-xs font-bold text-white bg-b hover:bg-bh transition;
+        }
+        .btn-g {
+          @apply bg-green-600 hover:bg-green-700;
+        }
+        .btn-o {
+          @apply bg-amber-600 hover:bg-amber-700;
+        }
+        .inp {
+          @apply w-full text-xs rounded-lg p-2.5 border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-950;
+        }
+        .mut {
+          @apply text-xs text-slate-500 dark:text-zinc-400;
+        }
+        .wrap {
+          @apply max-w-5xl mx-auto px-4 py-8;
+        }
+      }
+      :root {
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+    </style>
+  </head>
+  <body
+    class="font-sans bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 antialiased"
+  >
+    <nav
+      id="nav"
+      class="sticky top-0 z-50 backdrop-blur border-b border-slate-200 dark:border-zinc-800 px-4 py-2.5"
+    >
+      <div
+        class="max-w-5xl mx-auto flex items-center justify-between gap-3 flex-wrap"
+      >
+        <span class="font-extrabold text-lg flex items-center gap-2"
+          ><span
+            id="logo"
+            class="w-7 h-7 rounded-full text-white grid place-items-center text-sm"
+            >D</span
+          >DrainAct
+        </span>
+        <div
+          id="links"
+          class="flex gap-1 text-xs font-semibold order-3 md:order-none w-full md:w-auto overflow-x-auto"
+        ></div>
+        <div class="flex items-center gap-2">
+          <div
+            class="flex rounded-lg border border-slate-300 dark:border-zinc-700 overflow-hidden text-xs font-bold"
+          >
+            <button id="r-warga" onclick="setRole('warga')" class="px-3 py-1.5">
+              Warga
+            </button>
+            <button
+              id="r-petugas"
+              onclick="setRole('petugas')"
+              class="px-3 py-1.5"
+            >
+              Petugas DLH
+            </button>
+          </div>
+          <button
+            onclick="theme()"
+            class="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-zinc-700 text-sm"
+            aria-label="Ubah mode tampilan"
+          >
+            🌓
+          </button>
+          <span
+            id="pts"
+            class="text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 dark:bg-zinc-800"
+          ></span>
+          <button id="login" class="btn"></button>
+        </div>
+      </div>
+    </nav>
+    <div id="banner" class="text-center text-xs font-semibold py-1.5"></div>
+
+    <!-- ===== WARGA ===== -->
+    <main id="v-home" class="view hidden">
+      <header class="max-w-3xl mx-auto px-4 pt-12 pb-6 text-center">
+        <h1
+          class="text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.05]"
+        >
+          Ada tumpukan sampah yang mengganggu? Laporkan, kami bantu angkut.
+        </h1>
+        <p
+          class="mt-5 text-sm md:text-base text-slate-600 dark:text-zinc-400 max-w-xl mx-auto"
+        >
+          Tumpukan di pinggir jalan, lahan kosong, atau dekat rumah yang berbau
+          dan menghalangi jalan. Petugas mengangkutnya, kamu dapat poin untuk
+          ditukar kompos dan barang daur ulang.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3 mt-7">
+          <button onclick="go('lapor')" class="btn px-6 py-3">
+            Lapor tumpukan sampah</button
+          ><button onclick="go('tukar')" class="btn btn-g px-6 py-3">
+            Tukar poin</button
+          ><button
+            onclick="go('toko')"
+            class="btn bg-zinc-700 hover:bg-zinc-800 px-6 py-3"
+          >
+            Buka toko
+          </button>
+        </div>
+        <div
+          id="stats"
+          class="card grid grid-cols-3 gap-3 max-w-md mx-auto mt-10 !p-4"
+        ></div>
+      </header>
+      <section class="wrap">
+        <div class="card">
+          <div class="flex flex-wrap justify-between gap-3 mb-4">
+            <div>
+              <h2 class="font-extrabold text-lg">
+                Peta panas tumpukan sampah Kota Malang
+              </h2>
+              <p class="mut">
+                Semakin besar dan merah, semakin banyak tumpukan yang belum
+                diangkut.
+              </p>
+            </div>
+            <div class="filters flex gap-2 items-start text-xs"></div>
+          </div>
+          <div
+            id="heat"
+            class="heat relative h-80 rounded-xl overflow-hidden bg-slate-900 text-white"
+          ></div>
+        </div>
+      </section>
+    </main>
+
+    <main id="v-lapor" class="view hidden wrap">
+      <div class="grid md:grid-cols-2 gap-5">
+        <form id="form" class="card space-y-3">
+          <h2 class="font-extrabold text-lg">Laporkan tumpukan sampah</h2>
+          <label class="mut block"
+            >Foto bukti (wajib)<input
+              id="photo"
+              type="file"
+              accept="image/*"
+              class="inp mt-1"
+          /></label>
+          <img
+            id="prev"
+            class="hidden w-full h-40 object-cover rounded-lg"
+            alt="Pratinjau foto"
+          />
+          <label class="mut block"
+            >Jenis masalah<select id="cat" class="inp mt-1">
+              <option>Tumpukan sampah liar di pinggir jalan</option>
+              <option>Sampah menghalangi jalan</option>
+              <option>Bau menyengat dekat permukiman</option>
+              <option>TPS penuh dan meluber</option>
+              <option>Sampah menyumbat saluran air</option>
+            </select></label
+          >
+          <label class="mut block"
+            >Kecamatan<select id="area" class="inp mt-1"></select
+          ></label>
+          <label class="mut block"
+            >Lokasi detail<input
+              id="loc"
+              class="inp mt-1"
+              placeholder="Contoh: Lahan kosong samping Jl. Kawi No. 12"
+              required
+          /></label>
+          <label class="mut block"
+            >Tingkat gangguan<select id="sev" class="inp mt-1">
+              <option value="parah">
+                Parah: bau parah atau jalan terhalang
+              </option>
+              <option value="sedang">
+                Sedang: menumpuk tapi belum menghalangi
+              </option>
+            </select></label
+          >
+          <button class="btn w-full py-2.5">Kirim laporan ke petugas</button>
+          <p id="note" class="mut"></p>
+        </form>
+        <div class="card">
+          <h2 class="font-extrabold text-lg mb-1">Tanya DrainAct</h2>
+          <p class="mut mb-3">Pilih pertanyaan, jawaban langsung muncul.</p>
+          <div id="chat" class="space-y-2 text-xs min-h-[9rem]"></div>
+          <div id="chips" class="flex flex-wrap gap-2 mt-3"></div>
+        </div>
+      </div>
+    </main>
+
+    <main id="v-poin" class="view hidden wrap">
+      <div class="card flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="mut">Saldo poin kamu</div>
+          <div id="bal" class="text-4xl font-extrabold text-amber-500"></div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="go('tukar')" class="btn btn-g">Tukar poin</button
+          ><button onclick="go('toko')" class="btn">Beli di toko</button>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div class="card">
+          <h3 class="font-bold text-sm mb-2">Laporan saya</h3>
+          <ul id="mine" class="space-y-2 text-xs"></ul>
+        </div>
+        <div class="card">
+          <h3 class="font-bold text-sm mb-2">Riwayat poin</h3>
+          <ul id="hist" class="mut space-y-1"></ul>
+        </div>
+      </div>
+    </main>
+
+    <main id="v-tukar" class="view hidden wrap">
+      <div class="flex justify-between items-end mb-5">
+        <div>
+          <h2 class="font-extrabold text-2xl">Tukar poin</h2>
+          <p class="mut">Hasil olahan sampah dari mitra pengolah.</p>
+        </div>
+        <b id="bal2" class="text-amber-500 text-xl"></b>
+      </div>
+      <div id="rw" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+    </main>
+
+    <main id="v-toko" class="view hidden wrap">
+      <div class="flex flex-wrap justify-between items-end gap-2 mb-5">
+        <div>
+          <h2 class="font-extrabold text-2xl">Toko DrainAct</h2>
+          <p class="mut">
+            Beli dengan rupiah. Sebagian hasil penjualan membiayai pengangkutan
+            sampah.
+          </p>
+        </div>
+        <div id="cart" class="card !py-2 !px-4 text-xs"></div>
+      </div>
+      <div id="sp" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+    </main>
+
+    <!-- ===== PETUGAS ===== -->
+    <main id="v-antrean" class="view hidden wrap">
+      <div class="grid grid-cols-3 gap-3 mb-5" id="pstats"></div>
+      <div class="card border-amber-300 dark:border-amber-800">
+        <h2 class="font-extrabold text-lg">Antrean tugas pengangkutan</h2>
+        <p class="mut mb-4">
+          Urut dari yang paling parah. Setelah mengangkut, unggah foto bukti
+          lokasi bersih.
+        </p>
+        <div id="queue" class="space-y-2"></div>
+        <input id="doneFile" type="file" accept="image/*" class="hidden" />
+      </div>
+    </main>
+    <main id="v-peta" class="view hidden wrap">
+      <div class="card border-amber-300 dark:border-amber-800">
+        <div class="flex flex-wrap justify-between gap-3 mb-4">
+          <div>
+            <h2 class="font-extrabold text-lg">Peta tugas wilayah</h2>
+            <p class="mut">
+              Pilih wilayah yang padat untuk merencanakan rute armada.
+            </p>
+          </div>
+          <div class="filters flex gap-2 items-start text-xs"></div>
+        </div>
+        <div
+          id="heat2"
+          class="heat relative h-96 rounded-xl overflow-hidden bg-slate-900 text-white"
+        ></div>
+      </div>
+    </main>
+    <main id="v-riwayat" class="view hidden wrap">
+      <div class="card border-amber-300 dark:border-amber-800">
+        <h2 class="font-extrabold text-lg mb-3">Riwayat tugas selesai</h2>
+        <ul id="done" class="space-y-2 text-xs"></ul>
+      </div>
+    </main>
+
+    <div
+      id="toast"
+      class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-xl max-w-[90vw]"
+    ></div>
+
+    <script>
+      const $ = (s) => document.querySelector(s),
+        $$ = (s) => document.querySelectorAll(s);
+      const esc = (s) =>
+        String(s).replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      const rp = (n) => "Rp" + n.toLocaleString("id-ID");
+      const AREAS = {
+        Klojen: [50, 48],
+        Blimbing: [70, 28],
+        Lowokwaru: [32, 26],
+        Sukun: [30, 70],
+        Kedungkandang: [72, 70],
+      };
+      const NAV = {
+        warga: [
+          ["home", "Beranda"],
+          ["lapor", "Lapor"],
+          ["poin", "Poin Saya"],
+          ["tukar", "Tukar Poin"],
+          ["toko", "Toko"],
+        ],
+        petugas: [
+          ["antrean", "Antrean Tugas"],
+          ["peta", "Peta Tugas"],
+          ["riwayat", "Riwayat Selesai"],
+        ],
+      };
+      const PROD = [
+        {
+          n: "Pupuk kompos organik 5 kg",
+          e: "🌱",
+          pts: 150,
+          rp: 35000,
+          d: "Dari sisa makanan terpilah",
+        },
+        {
+          n: "Pot tanaman daur ulang",
+          e: "🪴",
+          pts: 200,
+          rp: 25000,
+          d: "Botol plastik terpilah",
+        },
+        {
+          n: "Tas anyaman plastik",
+          e: "👜",
+          pts: 250,
+          rp: 45000,
+          d: "Karya pengrajin lokal",
+        },
+        {
+          n: "Pupuk cair organik 1 L",
+          e: "🧴",
+          pts: 120,
+          rp: 20000,
+          d: "Fermentasi sampah dapur",
+        },
+      ];
+      const S = {
+        role: "warga",
+        view: "home",
+        login: false,
+        pts: 450,
+        hist: [],
+        cart: {},
+        added: 0,
+        cleaned: 0,
+        filter: "semua",
+        pend: null,
+        reports: [
+          {
+            id: 1,
+            area: "Kedungkandang",
+            loc: "Lahan kosong dekat Sawojajar Gang 5",
+            cat: "Tumpukan sampah liar di pinggir jalan",
+            sev: "parah",
+          },
+          {
+            id: 2,
+            area: "Lowokwaru",
+            loc: "Pinggir Jl. Soekarno-Hatta",
+            cat: "Sampah menghalangi jalan",
+            sev: "sedang",
+          },
+          {
+            id: 3,
+            area: "Klojen",
+            loc: "Pojok pasar dekat Jl. Kawi",
+            cat: "Bau menyengat dekat permukiman",
+            sev: "parah",
+          },
+          {
+            id: 4,
+            area: "Blimbing",
+            loc: "TPS perumahan Araya",
+            cat: "TPS penuh dan meluber",
+            sev: "sedang",
+          },
+          {
+            id: 5,
+            area: "Sukun",
+            loc: "Tepi sungai Jl. Bandulan",
+            cat: "Tumpukan sampah liar di pinggir jalan",
+            sev: "parah",
+          },
+          {
+            id: 6,
+            area: "Klojen",
+            loc: "Lahan kosong Jl. Semeru",
+            cat: "Tumpukan sampah liar di pinggir jalan",
+            sev: "parah",
+            done: 1,
+          },
+          {
+            id: 7,
+            area: "Blimbing",
+            loc: "Pinggir Jl. Borobudur",
+            cat: "Sampah menghalangi jalan",
+            sev: "sedang",
+            done: 1,
+          },
+        ],
+      };
+
+      function toast(m) {
+        const t = $("#toast");
+        t.textContent = m;
+        t.classList.remove("hidden");
+        clearTimeout(toast.t);
+        toast.t = setTimeout(() => t.classList.add("hidden"), 3000);
+      }
+      function theme() {
+        const d = document.documentElement.classList.toggle("dark");
+        try {
+          localStorage.setItem("theme", d ? "dark" : "light");
+        } catch (e) {}
+      }
+      function go(v) {
+        S.view = v;
+        render();
+        scrollTo(0, 0);
+      }
+      function setRole(r) {
+        S.role = r;
+        S.view = NAV[r][0][0];
+        render();
+        scrollTo(0, 0);
+      }
+
+      function heat(id) {
+        const vis = S.reports.filter(
+          (r) =>
+            S.filter == "semua" ||
+            (S.filter == "bersih" ? r.done : !r.done && r.sev == S.filter),
+        );
+        $(id).innerHTML =
+          '<div class="absolute inset-0 opacity-20" style="background:radial-gradient(#22C55E 1px,transparent 1px) 0 0/16px 16px"></div>' +
+          Object.entries(AREAS)
+            .map(([a, [x, y]]) => {
+              const l = vis.filter((r) => r.area == a),
+                act = l.filter((r) => !r.done),
+                bad = act.some((r) => r.sev == "parah");
+              const c = !act.length
+                  ? "rgba(34,197,94,.45)"
+                  : bad
+                    ? "rgba(225,29,72,.55)"
+                    : "rgba(245,158,11,.5)",
+                z = l.length ? 50 + l.length * 22 : 24;
+              return `<div class="absolute" style="left:${x}%;top:${y}%"><div class="absolute rounded-full blur-xl -translate-x-1/2 -translate-y-1/2" style="width:${z}px;height:${z}px;background:${c}"></div><div class="relative -translate-x-1/2 -translate-y-1/2 text-center text-[11px] font-bold whitespace-nowrap">${a}<div class="font-normal text-slate-300">${l.length} laporan</div></div></div>`;
+            })
+            .join("");
+      }
+
+      function render() {
+        const P = S.role == "petugas";
+        $("#nav").className =
+          "sticky top-0 z-50 backdrop-blur border-b px-4 py-2.5 " +
+          (P
+            ? "bg-amber-100/95 dark:bg-amber-950/95 border-amber-300 dark:border-amber-800"
+            : "bg-white/90 dark:bg-zinc-900/90 border-slate-200 dark:border-zinc-800");
+        $("#logo").className =
+          "w-7 h-7 rounded-full text-white grid place-items-center text-sm " +
+          (P ? "bg-amber-600" : "bg-b");
+        $("#banner").className =
+          "text-center text-xs font-semibold py-1.5 " +
+          (P
+            ? "bg-amber-600 text-white"
+            : "bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-200");
+        $("#banner").textContent = P
+          ? "Mode Petugas DLH: hanya untuk petugas terdaftar. Pelapor tidak melihat halaman ini."
+          : "Mode Warga: lapor tumpukan sampah, kumpulkan poin, tukar hadiah.";
+        for (const r of ["warga", "petugas"])
+          $("#r-" + r).className =
+            "px-3 py-1.5 " +
+            (S.role == r
+              ? P
+                ? "bg-amber-600 text-white"
+                : "bg-b text-white"
+              : "bg-transparent");
+        $("#links").innerHTML = NAV[S.role]
+          .map(
+            ([v, l]) =>
+              `<button onclick="go('${v}')" class="px-3 py-1.5 rounded-lg whitespace-nowrap ${S.view == v ? (P ? "bg-amber-600 text-white" : "bg-b text-white") : "text-slate-600 dark:text-zinc-400"}">${l}</button>`,
+          )
+          .join("");
+        $$(".view").forEach((e) => e.classList.add("hidden"));
+        $("#v-" + S.view).classList.remove("hidden");
+        $("#pts").classList.toggle("hidden", P);
+        $("#login").classList.toggle("hidden", P);
+        $("#login").textContent = S.login ? "Keluar" : "Masuk";
+        $("#pts").textContent = S.login ? "🪙 " + S.pts + " poin" : "Tamu";
+        $("#bal").textContent = $("#bal2").textContent = S.login
+          ? S.pts + " poin"
+          : "Masuk dulu";
+        $("#stats").innerHTML = [
+          [12408 + S.added, "Laporan masuk"],
+          [847 + S.cleaned, "Tumpukan diangkut"],
+          ["14,8 ton", "Sampah terolah"],
+        ]
+          .map(
+            ([v, l]) =>
+              `<div><div class="text-xl font-extrabold">${typeof v == "number" ? v.toLocaleString("id-ID") : v}</div><div class="mut">${l}</div></div>`,
+          )
+          .join("");
+        $$(".filters").forEach(
+          (f) =>
+            (f.innerHTML = ["semua", "parah", "sedang", "bersih"]
+              .map(
+                (x) =>
+                  `<button onclick="S.filter='${x}';render()" class="px-3 py-1 rounded-md capitalize ${S.filter == x ? (P ? "bg-amber-600 text-white" : "bg-b text-white") : "bg-slate-100 dark:bg-zinc-800"}">${x}</button>`,
+              )
+              .join("")),
+        );
+        heat("#heat");
+        heat("#heat2");
+        const act = S.reports
+          .filter((r) => !r.done)
+          .sort(
+            (a, b) => (a.sev == "parah" ? 0 : 1) - (b.sev == "parah" ? 0 : 1),
+          );
+        $("#pstats").innerHTML = [
+          [act.length, "Menunggu diangkut"],
+          [act.filter((r) => r.sev == "parah").length, "Prioritas parah"],
+          [S.reports.filter((r) => r.done).length, "Selesai"],
+        ]
+          .map(
+            ([v, l]) =>
+              `<div class="card !p-4 text-center border-amber-300 dark:border-amber-800"><div class="text-2xl font-extrabold text-amber-600">${v}</div><div class="mut">${l}</div></div>`,
+          )
+          .join("");
+        $("#queue").innerHTML =
+          act
+            .map(
+              (r) =>
+                `<div class="flex items-center justify-between gap-3 border border-slate-200 dark:border-zinc-800 rounded-xl p-3"><div><div class="text-sm font-bold">${esc(r.loc)}</div><div class="mut">${r.area} · ${esc(r.cat)} · <b class="${r.sev == "parah" ? "text-rose-500" : "text-amber-500"}">${r.sev}</b></div></div><button onclick="clean(${r.id})" class="btn btn-o shrink-0">Unggah foto bersih</button></div>`,
+            )
+            .join("") || '<p class="mut">Semua tumpukan sudah diangkut.</p>';
+        $("#done").innerHTML =
+          S.reports
+            .filter((r) => r.done)
+            .map(
+              (r) =>
+                `<li class="border border-slate-200 dark:border-zinc-800 rounded-xl p-3">✅ <b>${esc(r.loc)}</b> <span class="mut">· ${r.area}</span></li>`,
+            )
+            .join("") || '<li class="mut">Belum ada.</li>';
+        $("#mine").innerHTML =
+          S.reports
+            .filter((r) => r.mine)
+            .map(
+              (r) =>
+                `<li class="border border-slate-200 dark:border-zinc-800 rounded-lg p-2">${esc(r.loc)}<div class="mut">${r.done ? "✅ Sudah diangkut" : "⏳ Menunggu petugas"}</div></li>`,
+            )
+            .join("") || '<li class="mut">Belum ada laporan.</li>';
+        $("#hist").innerHTML =
+          S.hist.map((h) => `<li>${esc(h)}</li>`).join("") ||
+          "<li>Belum ada aktivitas.</li>";
+        $("#rw").innerHTML = PROD.map(
+          (p, i) =>
+            `<div class="card"><div class="h-24 grid place-items-center text-5xl rounded-lg bg-slate-100 dark:bg-zinc-950 mb-3">${p.e}</div><h4 class="font-bold text-sm">${p.n}</h4><p class="mut my-1">${p.d}</p><div class="flex justify-between items-center mt-3"><b class="text-amber-500 text-xs">${p.pts} poin</b><button onclick="redeem(${i})" class="btn btn-g">Tukar</button></div></div>`,
+        ).join("");
+        $("#sp").innerHTML = PROD.map(
+          (p, i) =>
+            `<div class="card"><div class="h-24 grid place-items-center text-5xl rounded-lg bg-slate-100 dark:bg-zinc-950 mb-3">${p.e}</div><h4 class="font-bold text-sm">${p.n}</h4><p class="mut my-1">${p.d}</p><div class="flex justify-between items-center mt-3"><b class="text-xs">${rp(p.rp)}</b><button onclick="add(${i})" class="btn">Tambah</button></div></div>`,
+        ).join("");
+        const n = Object.values(S.cart).reduce((a, b) => a + b, 0),
+          tot = Object.entries(S.cart).reduce(
+            (a, [i, q]) => a + PROD[i].rp * q,
+            0,
+          );
+        $("#cart").innerHTML = n
+          ? `🛒 ${n} barang · <b>${rp(tot)}</b> <button onclick="checkout()" class="btn ml-2">Bayar</button>`
+          : "🛒 Keranjang kosong";
+      }
+      function redeem(i) {
+        const p = PROD[i];
+        if (!S.login) return toast("Masuk dulu untuk menukar poin.");
+        if (S.pts < p.pts) return toast("Poin kurang " + (p.pts - S.pts) + ".");
+        S.pts -= p.pts;
+        S.hist.unshift("-" + p.pts + " poin: tukar " + p.n);
+        render();
+        toast("Berhasil ditukar: " + p.n);
+      }
+      function add(i) {
+        S.cart[i] = (S.cart[i] || 0) + 1;
+        render();
+      }
+      function checkout() {
+        S.cart = {};
+        render();
+        toast("Pesanan dibuat (simulasi).");
+      }
+      function clean(id) {
+        S.pend = id;
+        $("#doneFile").click();
+      }
+      $("#doneFile").onchange = (e) => {
+        if (!e.target.files.length) return;
+        const r = S.reports.find((x) => x.id == S.pend);
+        r.done = 1;
+        S.cleaned++;
+        if (r.mine && S.login) {
+          S.pts += 50;
+          S.hist.unshift('+50 poin: "' + r.loc + '" sudah diangkut');
+        }
+        toast(
+          r.mine
+            ? S.login
+              ? "Selesai. Pelapor mendapat 50 poin."
+              : "Selesai. Pelapor tamu tidak mendapat poin."
+            : "Selesai. Foto bukti tersimpan.",
+        );
+        e.target.value = "";
+        render();
+      };
+      $("#login").onclick = () => {
+        S.login = !S.login;
+        render();
+        toast(S.login ? "Masuk sebagai adiesdas (demo)." : "Kamu keluar.");
+      };
+      $("#area").innerHTML = Object.keys(AREAS)
+        .map((a) => `<option>${a}</option>`)
+        .join("");
+      $("#photo").onchange = (e) => {
+        const f = e.target.files[0],
+          p = $("#prev");
+        if (f) {
+          p.src = URL.createObjectURL(f);
+          p.classList.remove("hidden");
+        } else p.classList.add("hidden");
+      };
+      $("#form").onsubmit = (e) => {
+        e.preventDefault();
+        if (!$("#photo").files.length)
+          return toast("Foto bukti wajib dilampirkan.");
+        S.reports.unshift({
+          id: Date.now(),
+          area: $("#area").value,
+          loc: $("#loc").value.trim(),
+          cat: $("#cat").value,
+          sev: $("#sev").value,
+          mine: 1,
+        });
+        S.added++;
+        $("#note").textContent = S.login
+          ? "Terkirim. Kamu dapat 50 poin setelah petugas mengangkut."
+          : "Terkirim sebagai tamu. Masuk dulu jika ingin mendapat poin.";
+        e.target.reset();
+        $("#prev").classList.add("hidden");
+        render();
+        toast("Laporan terkirim ke antrean petugas.");
+      };
+      const QA = {
+        "Bagaimana cara lapor?":
+          "Lampirkan foto, pilih kecamatan, tulis lokasi, lalu kirim. Tamu juga boleh lapor.",
+        "Kapan saya dapat poin?":
+          "Setelah petugas mengangkut dan mengunggah foto bersih. Hanya akun yang sudah masuk yang dapat poin.",
+        "Siapa yang mengangkut?":
+          "Petugas kebersihan mitra. Mereka punya tampilan sendiri di mode Petugas DLH.",
+        "Poin bisa ditukar apa?":
+          "Kompos, pupuk cair, pot daur ulang, tas anyaman plastik. Buka menu Tukar Poin.",
+      };
+      $("#chips").innerHTML = Object.keys(QA)
+        .map(
+          (q) =>
+            `<button class="px-3 py-1.5 text-xs rounded-full border border-b text-b" data-q="${q}">${q}</button>`,
+        )
+        .join("");
+      $("#chat").innerHTML =
+        '<div class="bg-slate-100 dark:bg-zinc-800 rounded-xl p-2.5 w-fit">Halo! Ada yang ingin ditanyakan?</div>';
+      $("#chips").onclick = (e) => {
+        const q = e.target.dataset.q;
+        if (!q) return;
+        $("#chat").insertAdjacentHTML(
+          "beforeend",
+          `<div class="bg-b text-white rounded-xl p-2.5 w-fit ml-auto">${q}</div><div class="bg-slate-100 dark:bg-zinc-800 rounded-xl p-2.5 w-fit">${QA[q]}</div>`,
+        );
+      };
+      render();
+    </script>
+  </body>
+</html>
