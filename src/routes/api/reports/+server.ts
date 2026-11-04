@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
-import { isArea, isCategory, isSeverity } from '#lib/data';
-import { createReport, getAllReports } from '#lib/server/reports-db';
-import { checkImage } from '#lib/server/uploads';
+import { isArea, isCategory, isSeverity } from '#lib/data.ts';
+import { createReport, getAllReports } from '#lib/server/reports-db.ts';
+import { checkImage } from '#lib/server/uploads.ts';
 import type { RequestHandler } from './$types';
 
 /** GET /api/reports (Fetch all reports for cross-device sync) */

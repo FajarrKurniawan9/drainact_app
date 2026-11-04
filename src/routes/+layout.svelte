@@ -1,13 +1,8 @@
 <script lang="ts">
 	import '../app.css';
-	import favicon from '#lib/assets/favicon.svg';
-	import Banner from '#lib/components/Banner.svelte';
-	import Navbar from '#lib/components/Navbar.svelte';
-	import Footer from '#lib/components/Footer.svelte';
-	import FloatingReport from '#lib/components/FloatingReport.svelte';
 	import Toast from '#lib/components/Toast.svelte';
+	import ReportSheet from '#lib/components/ReportSheet.svelte';
 	import { store } from '#lib/store.svelte.ts';
-	import type { LayoutData } from './$types';
 
 	let { children }: { children: any } = $props();
 
@@ -17,15 +12,15 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
-	<title>DrainAct - Lapor Tumpukan Sampah Kota Malang</title>
+	<link rel="icon" href="/favicon.svg" />
+	<title>DrainAct — Lapor Sampah Liar Kota Malang</title>
 </svelte:head>
 
-<Navbar />
-<Banner />
-<main class="min-h-[70vh]">
+<a href="#main-content" class="skip-link">Langsung ke konten utama</a>
+
+<div id="main-content">
 	{@render children()}
-</main>
-<Footer />
-<FloatingReport />
+</div>
+
 <Toast />
+<ReportSheet />
