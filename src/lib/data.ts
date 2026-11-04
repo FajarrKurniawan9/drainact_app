@@ -38,9 +38,11 @@ export const NAV: Record<Role, NavItem[]> = {
 	warga: [
 		{ href: '/', label: 'Beranda' },
 		{ href: '/lapor', label: 'Lapor' },
-		{ href: '/poin', label: 'Poin Saya' },
-		{ href: '/tukar', label: 'Tukar Poin' },
-		{ href: '/toko', label: 'Toko' }
+		{ href: '/poin', label: 'Poin' },
+		{ href: '/tukar', label: 'Tukar' },
+		{ href: '/toko', label: 'Toko' },
+		{ href: '/profil', label: 'Profil' },
+		{ href: '/toko/seller', label: 'Seller' }
 	],
 	petugas: [
 		{ href: '/petugas', label: 'Antrean Tugas' },

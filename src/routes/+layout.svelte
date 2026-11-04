@@ -3,13 +3,14 @@
 	import favicon from '#lib/assets/favicon.svg';
 	import Banner from '#lib/components/Banner.svelte';
 	import Navbar from '#lib/components/Navbar.svelte';
+	import Footer from '#lib/components/Footer.svelte';
+	import FloatingReport from '#lib/components/FloatingReport.svelte';
 	import Toast from '#lib/components/Toast.svelte';
 	import { store } from '#lib/store.svelte.ts';
-	import type { LayoutProps } from './$types';
+	import type { LayoutData } from './$types';
 
-	let { children }: LayoutProps = $props();
+	let { children }: { children: any } = $props();
 
-	// Persist state to localStorage whenever any persisted field changes.
 	$effect(() => {
 		store.save();
 	});
@@ -22,7 +23,9 @@
 
 <Navbar />
 <Banner />
-<main>
+<main class="min-h-[70vh]">
 	{@render children()}
 </main>
+<Footer />
+<FloatingReport />
 <Toast />
