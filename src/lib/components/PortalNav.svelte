@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '#lib/components/Icon.svelte';
+	import DrainLogo from '#lib/components/DrainLogo.svelte';
 	import { store } from '#lib/store.svelte.ts';
 
 	let {
@@ -29,13 +30,7 @@
 <header class="portal-nav">
 	<div class="shell-wide nav-row">
 		<a href={isSeller ? '/toko/seller' : '/petugas'} class="brand">
-			<span class="brand-mark">
-				{#if isSeller}
-					<Icon name="leaf" size={18} />
-				{:else}
-					<Icon name="shield" size={18} />
-				{/if}
-			</span>
+			<DrainLogo size={38} />
 			<span class="brand-copy">
 				<span class="brand-sub">{brandSub}</span>
 				<span class="brand-title">{brandTitle}</span>

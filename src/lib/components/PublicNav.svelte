@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Icon from '#lib/components/Icon.svelte';
+	import DrainLogo from '#lib/components/DrainLogo.svelte';
 	import { store } from '#lib/store.svelte.ts';
 	import { scrolled } from '#lib/motion.ts';
 	import { PUBLIC_NAV } from '#lib/content.ts';
@@ -34,9 +35,7 @@
 <header class="pub-nav" class:shop={variant === 'shop'} use:scrolled={8}>
 	<div class="shell-wide nav-row">
 		<a href="/" class="brand" aria-label="DrainAct beranda">
-			<span class="brand-mark">
-				<img src="/img/brand-team.webp" alt="" width="34" height="34" />
-			</span>
+			<DrainLogo size={32} />
 			<span class="brand-word">DrainAct</span>
 		</a>
 
@@ -47,38 +46,23 @@
 		</nav>
 
 		<div class="tools">
-			<div class="lang" role="group" aria-label="Bahasa">
-				<button class="lang-btn on" aria-pressed="true">ID</button>
-				<button class="lang-btn" aria-pressed="false">EN</button>
-			</div>
-
-			<button class="icon-btn" onclick={toggleNight} aria-label={night ? 'Mode terang' : 'Mode malam'}>
-				<Icon name={night ? 'moon' : 'sun'} size={16} />
+			<button class="btn report-btn" onclick={() => store.openReport()}>
+				<Icon name="zap" size={14} />
+				<span>+ Lapor Cepat (&lt;30 Detik)</span>
 			</button>
 
-			<a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="tool-link">
-				<Icon name="phone" size={15} />
-				<span>Hubungi</span>
+			<button class="bell-btn" onclick={() => store.notify('3 notifikasi: Laporan #RPT-8842 sedang ditindaklanjuti oleh Armada Satgas 03.')} aria-label="Notifikasi">
+				<Icon name="bell" size={16} />
+				<span class="bell-dot"></span>
+			</button>
+
+			<a href="/profil" class="user-chip" aria-label="Profil Budi Santoso">
+				<span class="user-avatar"><Icon name="user" size={14} /></span>
+				<div class="user-info">
+					<b class="user-name">Budi Santoso</b>
+					<span class="user-pts">{store.pts.toLocaleString('id-ID')} Poin</span>
+				</div>
 			</a>
-
-			<button class="btn btn-lg report-btn" onclick={() => store.openReport()}>
-				<Icon name="alert-triangle" size={15} />
-				Lapor Sekarang
-			</button>
-
-			{#if store.login}
-				<a href="/toko/tukar" class="points">
-					<span class="coin"><Icon name="coins" size={13} /></span>
-					{store.pts} Poin
-				</a>
-				<a href="/dashboard" class="btn btn-lg ghost">Profile</a>
-			{:else}
-				<a href="/toko/tukar" class="points muted">
-					<span class="coin"><Icon name="coins" size={13} /></span>
-					- Poin
-				</a>
-				<button class="btn btn-lg ghost" onclick={() => store.toggleLogin()}>Login</button>
-			{/if}
 
 			<button class="icon-btn burger" onclick={() => (mobileOpen = !mobileOpen)} aria-label="Menu">
 				<Icon name={mobileOpen ? 'x' : 'menu'} size={18} />
@@ -184,132 +168,119 @@
 	}
 
 	.link.active {
-		color: var(--pub-teal);
+		color: #ffffff;
+		background: var(--pub-teal);
 		font-weight: 600;
+		border-radius: 999px;
+		padding: 7px 16px;
 	}
 
 	.tools {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 12px;
 		flex: none;
 	}
 
-	.lang {
-		display: flex;
-		align-items: center;
-		background: color-mix(in srgb, var(--pub-ink) 6%, transparent);
-		border-radius: var(--r-pill);
-		padding: 3px;
-	}
-
-	.lang-btn {
-		height: 24px;
-		padding: 0 9px;
-		border: 0;
-		border-radius: var(--r-pill);
-		background: transparent;
-		font-size: 10px;
-		font-weight: 700;
-		color: var(--pub-muted);
-		cursor: pointer;
-		transition: background 0.18s, color 0.18s;
-	}
-
-	.lang-btn.on {
-		background: var(--pub-card);
-		color: var(--pub-ink);
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-	}
-
-	.icon-btn {
-		width: 34px;
-		height: 34px;
-		border-radius: 50%;
-		border: 1px solid var(--pub-line);
-		background: transparent;
-		color: var(--pub-ink-2);
-		display: grid;
-		place-items: center;
-		cursor: pointer;
-		transition: background 0.15s, transform 0.25s var(--ease-spring);
-	}
-
-	.icon-btn:hover {
-		background: color-mix(in srgb, var(--pub-ink) 6%, transparent);
-		transform: rotate(12deg);
-	}
-
-	.tool-link {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		font-size: 12px;
-		font-weight: 500;
-		color: var(--pub-ink-2);
-		padding: 8px 6px;
-	}
-
-	.tool-link:hover {
-		color: var(--pub-teal);
-	}
-
-	.btn-lg {
-		height: 38px;
-		padding: 0 15px;
-		border-radius: 9px;
-		font-size: 12px;
-		font-weight: 600;
-	}
-
 	.report-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 7px;
+		height: 38px;
+		padding: 0 16px;
+		border-radius: 999px;
 		background: var(--pub-teal);
-		color: #fff;
+		color: #ffffff;
+		font-size: 12.5px;
+		font-weight: 700;
+		border: none;
+		cursor: pointer;
+		box-shadow: 0 4px 12px rgba(1, 97, 97, 0.25);
+		transition: transform 0.15s ease, background 0.15s ease;
+	}
+
+	.report-btn:active {
+		transform: scale(0.97);
 	}
 
 	.report-btn:hover {
 		background: var(--pub-teal-deep);
-		box-shadow: 0 10px 22px -12px rgba(44, 122, 122, 0.9);
 	}
 
-	.ghost {
-		border: 1px solid var(--pub-ink);
-		background: transparent;
-		color: var(--pub-ink);
-		font-weight: 600;
-	}
-
-	.ghost:hover {
-		background: var(--pub-ink);
-		color: var(--pub-bg-soft);
-		box-shadow: none;
-	}
-
-	.points {
-		display: inline-flex;
-		align-items: center;
-		gap: 6px;
-		height: 32px;
-		padding: 0 10px;
-		border-radius: var(--r-pill);
-		background: var(--pub-amber);
-		color: #2a1b00;
-		font-size: 11.5px;
-		font-weight: 700;
-	}
-
-	.points.muted {
-		background: color-mix(in srgb, var(--pub-ink) 8%, transparent);
-		color: var(--pub-muted);
-	}
-
-	.coin {
+	.bell-btn {
+		position: relative;
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		border: 1px solid var(--pub-line);
+		background: #ffffff;
+		color: var(--pub-ink-2);
 		display: grid;
 		place-items: center;
-		width: 18px;
-		height: 18px;
+		cursor: pointer;
+		transition: background 0.15s ease;
+	}
+
+	.bell-btn:hover {
+		background: var(--pub-bg-soft);
+	}
+
+	.bell-dot {
+		position: absolute;
+		top: 7px;
+		right: 7px;
+		width: 7px;
+		height: 7px;
 		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.45);
+		background: #ef4444;
+		border: 1.5px solid #ffffff;
+	}
+
+	.user-chip {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 4px 14px 4px 6px;
+		border-radius: 999px;
+		background: #ffffff;
+		border: 1px solid var(--pub-line);
+		text-decoration: none;
+		color: inherit;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+		transition: border-color 0.15s ease, transform 0.15s ease;
+	}
+
+	.user-chip:hover {
+		border-color: var(--pub-teal);
+		transform: translateY(-1px);
+	}
+
+	.user-avatar {
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		background: var(--pub-teal);
+		color: #ffffff;
+		display: grid;
+		place-items: center;
+	}
+
+	.user-info {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.2;
+	}
+
+	.user-name {
+		font-size: 12px;
+		font-weight: 700;
+		color: var(--pub-ink);
+	}
+
+	.user-pts {
+		font-size: 11px;
+		font-weight: 700;
+		color: var(--pub-teal);
 	}
 
 	.burger {

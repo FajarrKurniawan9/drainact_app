@@ -1,27 +1,28 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Icon from '#lib/components/Icon.svelte';
+	import DrainLogo from '#lib/components/DrainLogo.svelte';
 	import { store } from '#lib/store.svelte.ts';
 
 	let { active = 'Dashboard' }: { active?: string } = $props();
 
 	const links = [
-		{ label: 'Dashboard', href: '/dashboard' },
-		{ label: 'Peta Heatmap', href: '/dashboard#peta' },
+		{ label: 'Dashboard', href: '/' },
+		{ label: 'Peta Heatmap', href: '/#peta' },
 		{ label: 'Eco-Shop', href: '/toko' },
-		{ label: 'Kerja Bakti', href: '/hub#kerja-bakti' },
+		{ label: 'Kerja Bakti', href: '/kerja-bakti' },
 		{ label: 'Profil Saya', href: '/profil' }
 	];
 
 	const path = $derived(page.url.pathname);
 	const isActive = (label: string, href: string) =>
-		active === label || (href !== '/dashboard' && path === href.split('#')[0] && label === active);
+		active === label || (href !== '/' && path === href.split('#')[0] && label === active);
 </script>
 
 <header class="app-nav">
 	<div class="shell-wide nav-inner">
-		<a href="/dashboard" class="brand" aria-label="DrainAct dashboard">
-			<span class="brand-mark"><Icon name="leaf" size={18} /></span>
+		<a href="/" class="brand" aria-label="DrainAct beranda">
+			<DrainLogo size={32} />
 			<span class="brand-word">DrainAct</span>
 		</a>
 

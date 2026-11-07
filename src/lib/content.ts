@@ -4,17 +4,17 @@ import type { EcoProduct, MapPoint, Order } from './types.ts';
    Public landing content
    -------------------------------------------------------------------------- */
 export const PUBLIC_NAV = [
-	{ href: '/#cara-kerja', label: 'Cara Kerja' },
+	{ href: '/', label: 'Dashboard' },
 	{ href: '/#peta', label: 'Peta Heatmap' },
-	{ href: '/#fitur', label: 'Fitur' },
-	{ href: '/#kerja-bakti', label: 'Kerja Bakti' },
-	{ href: '/toko', label: 'Eco-Shop' }
+	{ href: '/toko', label: 'Eco-Shop' },
+	{ href: '/kerja-bakti', label: 'Kerja Bakti' },
+	{ href: '/profil', label: 'Profil Saya' }
 ];
 
 export const HERO_STATS = [
-	{ value: 12408, label: 'Laporan masuk' },
-	{ value: 2140, label: 'Relawan DLH aktif' },
-	{ value: 847, label: 'Laporan ditangani' }
+	{ value: 15400, display: '15.4K+', label: 'Laporan Tuntas', sub: 'Malang & Batu' },
+	{ value: 94.8, display: '94.8%', label: 'Akurasi AI', sub: 'Deteksi Volume Sampah' },
+	{ value: 24, display: '24 Min', label: 'Rata-rata Respon', sub: 'Tim Reaksi Cepat' }
 ];
 
 export const STEPS = [
@@ -86,9 +86,9 @@ export const PUBLIC_TESTIMONIALS = [
 ];
 
 export const FOOTER_LINKS = [
-	{ title: 'Platform', links: ['Buat Laporan', 'Heat Map', 'AI Waste Checker', 'Lacak Status', 'Analitik Terbuka'] },
-	{ title: 'Komunitas & Mitra', links: ['Ajak Kerja Bakti', 'Portal DLH dan Armada', 'DrainAct Eco-Shop', 'Mitra UMKM Daur Ulang', 'Riset & Impact ESG'] },
-	{ title: 'Tentang', links: ['Misi Kami', 'Tim & Mitra DLH', 'Metodologi AI & GIS', 'Privasi & Data', 'CS & Helpdesk'] }
+	{ title: 'HIDROLOGI & DRAINASE', links: ['Peta Telemetri Genangan GIS', 'Sensor Debit Air Kali Bantas', 'CCTV Inspeksi Culvert', 'Status Siaga Banjir BMKG'] },
+	{ title: 'LAYANAN & REGULASI', links: ['Pelaporan Warga Cepat', 'Bank Sampah & Daur Ulang', 'Kepatuhan Arsitektur SPBE', 'SOP Tanggap Darurat PU PR'] },
+	{ title: 'PEMERINTAH MITRA', links: ['Pemerintah Kota Malang', 'Pemerintah Kabupaten Malang', 'Pemerintah Kota Batu', 'Dinas Lingkungan Hidup Jatim'] }
 ];
 
 export const ECO_PRODUCTS: EcoProduct[] = [

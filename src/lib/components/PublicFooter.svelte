@@ -1,25 +1,23 @@
 <script lang="ts">
 	import Icon from '#lib/components/Icon.svelte';
+	import DrainLogo from '#lib/components/DrainLogo.svelte';
 	import { FOOTER_LINKS } from '#lib/content.ts';
 
 	const HREFS: Record<string, string> = {
-		'Buat Laporan': '/lapor',
-		'Heat Map': '/#peta',
-		'AI Waste Checker': '/#fitur',
-		'Lacak Status': '/profil',
-		'Analitik Terbuka': '/petugas',
-		'Ajak Kerja Bakti': '/hub#kerja-bakti',
-		'Portal DLH dan Armada': '/petugas',
-		'DrainAct Eco-Shop': '/toko',
-		'Mitra UMKM Daur Ulang': '/toko/seller',
-		'Riset & Impact ESG': '/hub#tentang',
-		'Misi Kami': '/hub',
-		'Tim & Mitra DLH': '/petugas',
-		'Metodologi AI & GIS': '/#fitur',
-		'Privasi & Data': '/hub#tentang',
-		'CS & Helpdesk': '/hub#tentang'
+		'Peta Telemetri Genangan GIS': '/#peta',
+		'Sensor Debit Air Kali Bantas': '/#peta',
+		'CCTV Inspeksi Culvert': '/dashboard',
+		'Status Siaga Banjir BMKG': '/dashboard',
+		'Pelaporan Warga Cepat': '/lapor',
+		'Bank Sampah & Daur Ulang': '/toko',
+		'Kepatuhan Arsitektur SPBE': '/hub#tentang',
+		'SOP Tanggap Darurat PU PR': '/hub#tentang',
+		'Pemerintah Kota Malang': 'https://malangkota.go.id',
+		'Pemerintah Kabupaten Malang': 'https://malangkab.go.id',
+		'Pemerintah Kota Batu': 'https://kotabatu.go.id',
+		'Dinas Lingkungan Hidup Jatim': 'https://dlh.jatimprov.go.id'
 	};
-	const hrefFor = (label: string) => HREFS[label] ?? '/hub';
+	const hrefFor = (label: string) => HREFS[label] ?? '/#';
 </script>
 
 <footer class="pub-footer">
@@ -27,16 +25,18 @@
 		<div class="cols">
 			<div class="brand-col">
 				<div class="brand">
-					<span class="mark"><img src="/img/brand-team.webp" alt="" width="44" height="44" /></span>
-					<span class="word">Drain<span>Act</span></span>
+					<DrainLogo size={36} />
+					<div class="brand-text">
+						<span class="word">Drain<span>Act</span></span>
+						<span class="sub-word">Civic Ecosystem</span>
+					</div>
 				</div>
 				<p>
-					Platform pelaporan tumpukan sampah &amp; drainase tersumbat berbasis lokasi. Dirintis di
-					Jawa Timur untuk pencegahan banjir dan lingkungan bersih. Data terbuka untuk warga &amp; DLH.
+					Platform tata kelola hidrologi perkotaan, drainase cerdas, dan sirkularitas sampah terintegrasi. Menghubungkan partisipasi aktif warga dengan respon cepat dinas teknis pemerintah daerah.
 				</p>
 				<div class="live">
 					<span class="dot dot-live"></span>
-					Sistem telemetri &amp; dispatch terbuka · Malang Raya
+					Sistem Telemetri &amp; Dispatch Terbuka · Malang Raya
 				</div>
 			</div>
 
@@ -53,9 +53,9 @@
 		</div>
 
 		<div class="bottom">
-			<span>© 2026 DrainAct · Pilot Jawa Timur · v1.0</span>
+			<span>© 2025 DrainAct Civic Tech Initiative. Berstandar SPBE &amp; Satu Data Indonesia.</span>
 			<div class="legal">
-				<a href="/hub#tentang">Privasi</a><span>·</span><a href="/hub#tentang">Syarat</a><span>·</span><a href="/hub#tentang">Keamanan</a><span>·</span><a href="/hub#tentang">Aksesibilitas</a>
+				<span>Sistem Operasional Drainase Presisi · Malang Raya Pilot</span>
 			</div>
 		</div>
 	</div>
@@ -83,19 +83,17 @@
 		margin-bottom: 18px;
 	}
 
-	.mark {
-		width: 44px;
-		height: 44px;
-		border-radius: 10px;
-		overflow: hidden;
-		flex: none;
-		box-shadow: var(--shadow-sm);
+	.brand-text {
+		display: flex;
+		flex-direction: column;
 	}
 
-	.mark img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
+	.sub-word {
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: var(--pub-teal);
 	}
 
 	.word {

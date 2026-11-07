@@ -19,7 +19,7 @@ interface Persisted {
 
 class AppStore {
 	// ---- persisted state ----
-	login = $state(false);
+	login = $state(true);
 	pts = $state(INITIAL_POINTS);
 	hist = $state<string[]>([]);
 	cart = $state<Record<number, number>>({});

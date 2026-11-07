@@ -1,26 +1,23 @@
 <script lang="ts">
 	import Icon from '#lib/components/Icon.svelte';
+	import DrainLogo from '#lib/components/DrainLogo.svelte';
 	import { store } from '#lib/store.svelte.ts';
 
-	let { active = 'Beranda' }: { active?: string } = $props();
+	let { active = 'Dashboard' }: { active?: string } = $props();
 
 	const links = [
-		{ label: 'Beranda', href: '/hub' },
-		{ label: 'Pemerintah & DLH', href: '/petugas' },
-		{ label: 'Eco-Marketplace', href: '/toko' },
-		{ label: 'Tentang Kami', href: '/hub#tentang' }
+		{ label: 'Dashboard', href: '/' },
+		{ label: 'Peta Heatmap', href: '/#peta' },
+		{ label: 'Eco-Shop', href: '/toko' },
+		{ label: 'Kerja Bakti', href: '/kerja-bakti' },
+		{ label: 'Profil Saya', href: '/profil' }
 	];
 </script>
 
 <header class="hub-nav">
 	<div class="shell-wide nav-inner">
-		<a href="/hub" class="brand">
-			<span class="brand-mark">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-					<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" opacity=".55" />
-					<path d="M7 7h10v10H7" />
-				</svg>
-			</span>
+		<a href="/" class="brand">
+			<DrainLogo size={34} />
 			<span class="brand-word">DrainAct</span>
 		</a>
 
@@ -32,13 +29,13 @@
 
 		<div class="actions">
 			<button class="btn report" onclick={() => store.openReport()}>
-				<Icon name="megaphone" size={14} />
-				Lapor Cepat (&lt;30 Detik)
+				<Icon name="zap" size={14} />
+				+ Lapor Cepat (&lt;30 Detik)
 			</button>
-			<a class="btn portal" href="/petugas">
-				<Icon name="building" size={14} />
-				Portal Petugas
-			</a>
+			<button class="btn-bell" onclick={() => store.notify('3 notifikasi baru dari DLH')} aria-label="Notifikasi">
+				<Icon name="bell" size={16} />
+				<span class="bell-dot"></span>
+			</button>
 			<a href="/profil" class="avatar" aria-label="Profil Budi Santoso">
 				<img src="/img/avatar-budi.webp" alt="" width="36" height="36" />
 				<span class="online"></span>
